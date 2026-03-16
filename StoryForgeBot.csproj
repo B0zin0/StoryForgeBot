@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>StoryForgeBot</AssemblyName>
+    <RootNamespace>StoryForgeBot</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Discord.Net for bot functionality -->
+    <PackageReference Include="Discord.Net" Version="3.14.1"/>
+  </ItemGroup>
+
+</Project>
