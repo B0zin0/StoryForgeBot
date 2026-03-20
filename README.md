@@ -22,8 +22,4 @@ Discord bot for the StoryForge MCSM Launcher.
 
 ## Inviting the bot to your server
 
-In the Developer Portal go to **OAuth2 → URL Generator**:
-- Scopes: `bot`, `applications.commands`
-- Permissions: `Send Messages`, `Read Message History`, `View Channels`
-
 Copy the generated URL and open it to invite the bot.
