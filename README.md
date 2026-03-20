@@ -20,22 +20,6 @@ Discord bot for the StoryForge MCSM Launcher.
 | `!screenshot` | Share a screenshot (attach image) |
 | `!help` | Show all commands |
 
-## Deploying to Railway
-
-1. Push this folder to a GitHub repo
-2. Go to [railway.app](https://railway.app) and create a new project
-3. Connect your GitHub repo
-4. Go to **Variables** and add:
-   - `DISCORD_TOKEN` = your bot token from discord.com/developers
-   - `ANNOUNCE_CHANNEL_ID` = right click your announcement channel in Discord → Copy Channel ID
-5. Railway auto-detects the Dockerfile and deploys
-
-## Getting your bot token
-
-1. Go to [discord.com/developers/applications](https://discord.com/developers/applications)
-2. Select your app → **Bot** → **Reset Token** → copy it
-3. Paste it as the `DISCORD_TOKEN` variable in Railway
-
 ## Inviting the bot to your server
 
 In the Developer Portal go to **OAuth2 → URL Generator**:
