@@ -14,17 +14,12 @@ namespace StoryForgeBot
         private static DiscordSocketClient _client = null!;
         private static readonly HttpClient _http   = new();
 
-        // Tracks last known download count for the milestone announcer
         private static long _lastDownloadCount = 0;
 
-        // Milestones to announce (e.g. every 10 downloads, then 50, 100, 500...)
         private static readonly long[] _milestones = { 10, 25, 50, 100, 250, 500, 1000 };
 
-        // Channel ID to post milestone announcements in
-        // Replace this with your actual announcements channel ID
         private static ulong _announcementChannelId = 0;
 
-        // Random quotes from MCSM
         private static readonly string[] _quotes =
         {
             "\"You know what they say — keep on keeping on!\" — Lukas",
@@ -41,7 +36,6 @@ namespace StoryForgeBot
             "\"We built this. We can rebuild it.\" — Jesse",
         };
 
-        // Fun facts about MCSM
         private static readonly string[] _facts =
         {
             "Minecraft: Story Mode was developed by Telltale Games and released in October 2015.",
@@ -69,7 +63,6 @@ namespace StoryForgeBot
                 return;
             }
 
-            // Optionally read announcement channel from env
             var chanEnv = Environment.GetEnvironmentVariable("ANNOUNCE_CHANNEL_ID");
             if (ulong.TryParse(chanEnv, out var chanId))
                 _announcementChannelId = chanId;
@@ -91,7 +84,6 @@ namespace StoryForgeBot
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
-            // Start the download milestone watcher in the background
             _ = Task.Run(DownloadWatcher);
 
             await Task.Delay(Timeout.Infinite);
@@ -109,14 +101,12 @@ namespace StoryForgeBot
             await _client.SetGameAsync("StoryForge Launcher", type: ActivityType.Playing);
         }
 
-        // ── Command router ───────────────────────────────────────────────
         private static async Task HandleMessage(SocketMessage message)
         {
             if (message.Author.IsBot) return;
             if (message is not SocketUserMessage msg) return;
             if (!msg.Content.StartsWith("!")) return;
 
-            // Split into command + optional args
             var parts   = msg.Content.Trim().Split(' ', 2);
             var command = parts[0].ToLower();
 
@@ -179,7 +169,6 @@ namespace StoryForgeBot
             }
         }
 
-        // ── Embeds ───────────────────────────────────────────────────────
 
         private static Embed BuildInfoEmbed() =>
             new EmbedBuilder()
@@ -312,7 +301,6 @@ namespace StoryForgeBot
                 releaseUrl = doc.RootElement.GetProperty("html_url").GetString()  ?? releaseUrl;
                 body       = doc.RootElement.GetProperty("body").GetString()       ?? body;
 
-                // Trim if too long for Discord embed
                 if (body.Length > 1000) body = body[..1000] + "...";
             }
             catch { }
@@ -382,14 +370,13 @@ namespace StoryForgeBot
 
             var pollMsg = await msg.Channel.SendMessageAsync(embed: embed);
 
-            // Add reactions for voting
             await pollMsg.AddReactionAsync(new Emoji("1️⃣"));
             await pollMsg.AddReactionAsync(new Emoji("2️⃣"));
         }
 
         private static async Task HandleScreenshot(SocketUserMessage msg)
         {
-            // Check if an image was attached
+
             if (msg.Attachments.Count == 0)
             {
                 await msg.Channel.SendMessageAsync(
@@ -432,12 +419,8 @@ namespace StoryForgeBot
                 .WithFooter("StoryForge Bot by B0zin0")
                 .Build();
 
-        // ── Download milestone watcher ───────────────────────────────────
-        // Runs in background, checks GitHub every 10 minutes
-        // Posts in announcement channel when a milestone is hit
         private static async Task DownloadWatcher()
         {
-            // Wait for client to be ready
             await Task.Delay(5000);
 
             while (true)
@@ -454,7 +437,6 @@ namespace StoryForgeBot
                             foreach (var asset in assets.EnumerateArray())
                                 total += asset.GetProperty("download_count").GetInt64();
 
-                    // Check if we just crossed a milestone
                     foreach (var milestone in _milestones)
                     {
                         if (_lastDownloadCount < milestone && total >= milestone)
@@ -468,7 +450,6 @@ namespace StoryForgeBot
                 }
                 catch { /* Network error — try again next tick */ }
 
-                // Check every 10 minutes
                 await Task.Delay(TimeSpan.FromMinutes(10));
             }
         }
